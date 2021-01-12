@@ -1,33 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { useFormik } from 'formik';
+import { Formik, useFormikContext } from 'formik';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import * as Yup from 'yup';
 
+const EmailForm = () => {
+  const { handleChange, submitForm, values } = useFormikContext();
+  return (
+    <>
+      <StatusBar style='auto' />
+      <Text>Enter email:</Text>
+      <TextInput style={styles.input} onChangeText={handleChange('email')} value={values.email} />
+      <Button title='Send' onPress={submitForm} />
+    </>
+  );
+};
+
 export default function App() {
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-    },
-    validationSchema: Yup.object({
-      email: Yup.string().email('Invalid email').required('Required email'),
-    }),
-    onSubmit: (x) => console.warn(x),
-  });
   return (
     <View style={styles.container}>
-      <Text>Enter email:</Text>
-      <TextInput
-        onBlur={formik.handleBlur('email')}
-        style={styles.input}
-        onChangeText={formik.handleChange('email')}
-        value={formik.values.email}
-      />
-      {formik.errors.email && formik.touched.email ? (
-        <Text style={styles.error}>{formik.errors.email}</Text>
-      ) : null}
-      <Button title='Send' onPress={formik.handleSubmit} />
-      <StatusBar style='auto' />
+      <Formik
+        initialValues={{
+          email: '',
+        }}
+        validationSchema={Yup.object({
+          email: Yup.string().required('Email required').email('Email invalid'),
+        })}
+      >
+        <EmailForm />
+      </Formik>
     </View>
   );
 }
