@@ -2,28 +2,16 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useFormik } from 'formik';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-
-function validateEmail(email) {
-  return re.test(String(email).toLowerCase());
-}
-
-const validate = (values) => {
-  const errors = {};
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!values.email) {
-    errors.email = 'Email required';
-  } else if (!re.test(values.email)) {
-    errors.email = 'Email invalid';
-  }
-  return errors;
-};
+import * as Yup from 'yup';
 
 export default function App() {
   const formik = useFormik({
     initialValues: {
       email: '',
     },
-    validate,
+    validationSchema: Yup.object({
+      email: Yup.string().email('Invalid email').required('Required email'),
+    }),
     onSubmit: (x) => console.warn(x),
   });
   return (
